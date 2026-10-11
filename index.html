@@ -1,1 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dots AI Studio | ChatGPT & Autonomous Agency</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark free-tier">
+  <div id="app" class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="btnToggleSidebar" class="icon-btn" aria-label="Toggle Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="brand">
+          <span class="brand-name">Dots AI</span>
+          <span class="brand-badge">STUDIO</span>
+        </div>
+      </div>
 
+      <div class="header-center">
+        <!-- Dots 24/7 Status Symbol -->
+        <button id="btnToggleDotsMaster" class="dots-status-chip active" title="Toggle Dots 24/7 Agency Activity">
+          <span class="pulsing-dot"></span>
+          <span class="dots-status-label">Dots 24/7: ACTIVE</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <!-- Free vs Premium Tier Switcher -->
+        <button id="btnTierSwitcher" class="tier-chip" title="Switch Tier">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon></svg>
+          <span id="tierLabel">FREE TIER</span>
+        </button>
+        <!-- New Chat -->
+        <button id="btnNewChat" class="icon-btn primary" title="New Chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <!-- Settings -->
+        <button id="btnOpenSettings" class="icon-btn" title="Settings & API Key">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- App Body with Sidebar & Views -->
+    <div class="app-body">
+      <!-- Sidebar Drawer -->
+      <aside id="appSidebar" class="app-sidebar">
+        <div class="sidebar-top">
+          <button id="btnSidebarNewChat" class="btn-full-new-chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div class="sidebar-section-title">CHATS HISTORY</div>
+        <div id="conversationsList" class="conversations-list">
+          <!-- Populated dynamically via script.js -->
+        </div>
+        <div class="sidebar-footer">
+          <div class="offline-badge">
+            <span class="status-indicator-green"></span>
+            <span>Local Storage Active</span>
+          </div>
+          <small>Dots AI Studio 24/7</small>
+        </div>
+      </aside>
+
+      <!-- Main Content Container -->
+      <main class="main-content">
+        <!-- TAB 1: Chat View -->
+        <section id="viewChat" class="view-panel active">
+          <div id="chatMessages" class="chat-messages">
+            <!-- Messages rendered dynamically -->
+          </div>
+
+          <!-- Attachment Preview Strip -->
+          <div id="attachmentPreviewStrip" class="attachment-strip hidden">
+            <div id="previewContent" class="preview-content"></div>
+            <button id="btnClearAttachment" class="btn-icon-sm" title="Remove attachment">&times;</button>
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div class="chat-input-wrapper">
+            <div class="chat-input-box">
+              <input type="file" id="filePhotoInput" accept="image/*" style="display:none;">
+              <input type="file" id="fileDocInput" accept=".txt,.md,.json,.csv,.doc,.pdf" style="display:none;">
+
+              <button id="btnAttachPhoto" class="btn-attach" title="Upload Photo (Vision Analysis)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              </button>
+
+              <button id="btnAttachDoc" class="btn-attach" title="Attach Document to Summarize / Convert">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </button>
+
+              <textarea id="chatInput" placeholder="Message Dots AI..." rows="1"></textarea>
+
+              <button id="btnSendMessage" class="btn-send" title="Send message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+              </button>
+            </div>
+            <div class="input-disclaimer">Dots AI may provide synthesized educational answers. Data stored locally.</div>
+          </div>
+        </section>
+
+        <!-- TAB 2: Dots 24/7 Agency Dashboard View -->
+        <section id="viewDotsAgency" class="view-panel">
+          <div class="agency-dashboard-container">
+            <!-- Master 24/7 Card -->
+            <div class="agency-master-card">
+              <div class="agency-master-header">
+                <div class="agency-hero">
+                  <div class="agency-symbol-aura" id="agencySymbolAura">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+                  </div>
+                  <div>
+                    <h2>Dots Agency 24/7</h2>
+                    <p id="agencyStatusSubtext">Autonomous agency running 24/7. Monitoring assigned responsibilities.</p>
+                  </div>
+                </div>
+
+                <div class="agency-toggle-control">
+                  <label class="switch">
+                    <input type="checkbox" id="chkDots247Master" checked>
+                    <span class="slider round"></span>
+                  </label>
+                  <span id="agencySwitchText" class="switch-label">ACTIVE 24/7</span>
+                </div>
+              </div>
+
+              <!-- Stats Metrics -->
+              <div class="agency-stats-grid">
+                <div class="stat-card">
+                  <div class="stat-num" id="statActiveTasks">0</div>
+                  <div class="stat-label">Active Responsibilities</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-num" id="statDeliverables">0</div>
+                  <div class="stat-label">Deliverables Produced</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-num" id="statAgencyUptime">99.9%</div>
+                  <div class="stat-label">24/7 Autonomous Uptime</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="agency-actions-bar">
+              <button id="btnAssignNewResponsibility" class="btn-primary-action">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Assign Responsibility to Dots
+              </button>
+              <button id="btnToggleAgencyLogs" class="btn-secondary-action">View 24/7 Audit Logs</button>
+            </div>
+
+            <!-- Audit Logs Box (collapsible) -->
+            <div id="agencyAuditLogsBox" class="agency-logs-box hidden">
+              <div class="logs-header">
+                <span>DOTS 24/7 AUDIT TRAIL</span>
+                <button id="btnClearLogs" class="btn-text">Clear</button>
+              </div>
+              <div id="logsFeed" class="logs-feed"></div>
+            </div>
+
+            <!-- Responsibilities Filter & List -->
+            <div class="responsibilities-section">
+              <div class="section-header">
+                <h3>Assigned Responsibilities</h3>
+                <div class="filter-chips">
+                  <button class="chip active" data-filter="all">All</button>
+                  <button class="chip" data-filter="ACTIVE">Active</button>
+                  <button class="chip" data-filter="COMPLETED">Completed</button>
+                  <button class="chip" data-filter="PAUSED">Paused</button>
+                </div>
+              </div>
+
+              <div id="tasksList" class="tasks-grid">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: Converted Documents Studio Dashboard View -->
+        <section id="viewDocsStudio" class="view-panel">
+          <div class="docs-dashboard-container">
+            <div class="docs-dashboard-header">
+              <div>
+                <h2>Converted Documents Studio</h2>
+                <p>Manage, search, and convert documents across formats with zero restrictions.</p>
+              </div>
+              <button id="btnNewDocConversion" class="btn-primary-action">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                New Conversion
+              </button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="docs-search-bar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="docSearchInput" placeholder="Search converted documents by title or keyword...">
+            </div>
+
+            <div class="docs-category-chips">
+              <button class="chip active" data-category="All">All Documents</button>
+              <button class="chip" data-category="Summary">Summaries</button>
+              <button class="chip" data-category="Report">Reports</button>
+              <button class="chip" data-category="Study Guide">Study Guides</button>
+              <button class="chip" data-category="Code/Data">JSON & Data</button>
+              <button class="chip" data-category="Memo">Memos</button>
+            </div>
+
+            <div id="documentsGrid" class="documents-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Bottom Navigation Bar (Mobile / Responsive) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="viewChat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Chat</span>
+      </button>
+
+      <button class="nav-item" data-view="viewDotsAgency">
+        <span class="nav-icon-wrapper">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>
+          <span class="nav-active-dot"></span>
+        </span>
+        <span>Dots 24/7</span>
+      </button>
+
+      <button class="nav-item" data-view="viewDocsStudio">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>Docs Studio</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal: Assign Responsibility to Dots -->
+  <div id="modalAssignDots" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Assign Responsibility to Dots 24/7</h3>
+        <button class="btn-close-modal" data-close="modalAssignDots">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Dots runs 24/7 autonomously. Assign responsibilities, requirements, and target formats.</p>
+
+        <label>Preset Responsibilities:</label>
+        <div class="preset-pill-list">
+          <button type="button" class="preset-pill" data-title="Auto-Summarize Imported Docs" data-desc="Continuously scan incoming documents and generate executive summaries with key bullet points." data-fmt="EXECUTIVE_SUMMARY">Auto-Summarizer</button>
+          <button type="button" class="preset-pill" data-title="Educational Study Guides" data-desc="Synthesize course materials into interactive study guides with review questions." data-fmt="STUDY_GUIDE">Study Guides</button>
+          <button type="button" class="preset-pill" data-title="Universal Document Converter" data-desc="Autonomous document converter pipeline with zero format or length restrictions." data-fmt="CLEAN_MARKDOWN">Format Converter</button>
+          <button type="button" class="preset-pill" data-title="24/7 Research & Fact Checking" data-desc="Fact-check research claims, structure findings, and compile citations." data-fmt="PROFESSIONAL_REPORT">Research Agent</button>
+        </div>
+
+        <div class="form-group">
+          <label for="dotsTaskTitle">Responsibility Title</label>
+          <input type="text" id="dotsTaskTitle" placeholder="e.g. Autonomous Document Analyst">
+        </div>
+
+        <div class="form-group">
+          <label for="dotsTaskDesc">Duty & Execution Instructions</label>
+          <textarea id="dotsTaskDesc" rows="3" placeholder="Provide instructions for Dots to follow autonomously..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dotsPriority">Priority</label>
+            <select id="dotsPriority">
+              <option value="HIGH">High Priority</option>
+              <option value="MEDIUM">Medium Priority</option>
+              <option value="LOW">Normal Priority</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dotsOutputFormat">Target Output Format</label>
+            <select id="dotsOutputFormat">
+              <option value="EXECUTIVE_SUMMARY">Executive Summary</option>
+              <option value="STUDY_GUIDE">Study Guide</option>
+              <option value="PROFESSIONAL_REPORT">Formal Report</option>
+              <option value="CLEAN_MARKDOWN">Markdown</option>
+              <option value="JSON_DATA">JSON Schema</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modalAssignDots">Cancel</button>
+        <button id="btnSubmitAssignDots" class="btn-primary">Assign to Dots</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Document Converter -->
+  <div id="modalDocConvert" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Universal Document Converter</h3>
+        <button class="btn-close-modal" data-close="modalDocConvert">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Convert documents, notes, or research into any format with zero restrictions.</p>
+
+        <div class="form-group">
+          <label for="convertTitle">Document Title</label>
+          <input type="text" id="convertTitle" placeholder="Document Title">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="convertSourceFormat">Source Format</label>
+            <select id="convertSourceFormat">
+              <option value="RAW_NOTES">Raw Notes</option>
+              <option value="PLAIN_TEXT">Plain Text</option>
+              <option value="DOCUMENT">Document File</option>
+              <option value="CODE_SPECS">Code / Specs</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="convertTargetFormat">Target Format</label>
+            <select id="convertTargetFormat">
+              <option value="EXECUTIVE_SUMMARY">Executive Summary</option>
+              <option value="STUDY_GUIDE">Study Guide</option>
+              <option value="PROFESSIONAL_REPORT">Formal Report</option>
+              <option value="CLEAN_MARKDOWN">Clean Markdown</option>
+              <option value="JSON_DATA">Structured JSON Data</option>
+              <option value="MEMO">Business Memo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="convertContent">Content to Convert</label>
+          <textarea id="convertContent" rows="5" placeholder="Paste text, notes, or research here..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="convertInstructions">Custom Instructions (Optional)</label>
+          <input type="text" id="convertInstructions" placeholder="e.g. Include bullet points, extract key entities...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modalDocConvert">Cancel</button>
+        <button id="btnSubmitConvert" class="btn-primary">Convert with AI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: View Document -->
+  <div id="modalViewDoc" class="modal-backdrop hidden">
+    <div class="modal-dialog large">
+      <div class="modal-header">
+        <h3 id="viewDocTitle">Document Title</h3>
+        <button class="btn-close-modal" data-close="modalViewDoc">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="doc-meta-bar">
+          <span id="viewDocFormatBadge" class="format-badge">RAW → SUMMARY</span>
+          <span id="viewDocWordCount" class="meta-item">0 words</span>
+          <span id="viewDocDate" class="meta-item">Date</span>
+        </div>
+        <div class="doc-actions-bar">
+          <button id="btnCopyViewDoc" class="btn-action-sm">Copy Content</button>
+          <button id="btnDeleteViewDoc" class="btn-action-sm danger">Delete</button>
+        </div>
+        <div class="doc-content-display">
+          <h4>Converted Deliverable</h4>
+          <pre id="viewDocBody"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Settings & Environment -->
+  <div id="modalSettings" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Settings & Environment</h3>
+        <button class="btn-close-modal" data-close="modalSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-card">
+          <h4>Gemini API Key</h4>
+          <p class="modal-desc">API key configured securely. You can update or override below:</p>
+          <input type="password" id="inputApiKeyOverride" placeholder="Pre-configured key active">
+        </div>
+
+        <div class="settings-card">
+          <h4>Model & Tier</h4>
+          <p class="modal-desc">Free: <code>gemini-3.5-flash</code> | Premium: <code>gemini-3.1-pro-preview</code></p>
+        </div>
+
+        <div class="settings-card">
+          <h4>Local Storage</h4>
+          <p class="modal-desc">All chat logs, documents, and Dots 24/7 tasks are stored persistently in your browser's localStorage for offline access.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveSettings" class="btn-primary">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

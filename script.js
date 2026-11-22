@@ -12,7 +12,7 @@ const FMT_CAT = { EXECUTIVE_SUMMARY: "Summary", STUDY_GUIDE: "Study Guide", PROF
 const FMT_LABEL = { EXECUTIVE_SUMMARY: "Executive summary", STUDY_GUIDE: "Study guide", PROFESSIONAL_REPORT: "Report", CLEAN_MARKDOWN: "Markdown", JSON_DATA: "JSON", MEMO: "Memo" };
 
 let S = {
-  pro: false, apiKey: "", modelFree: "gemini-2.5-flash", modelPro: "gemini-2.5-pro",
+  pro: false, apiKey: "", modelFree: "gemini-3.8-flash", modelPro: "gemini-3.1-pro-preview",
   dotsOn: true, currentId: null, conversations: [], documents: [], tasks: [], logs: []
 };
 let attachment = null; // {name, mime, data (base64) | text, preview}
@@ -22,6 +22,9 @@ const running = new Set();
 /* ---------- State ---------- */
 function load() {
   try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) { console.warn(e); }
+  // Migrate old saved model names that Google no longer serves
+  if (!S.modelFree || S.modelFree.includes("2.5-flash")) S.modelFree = "gemini-3.8-flash";
+  if (!S.modelPro || S.modelPro.includes("2.5-pro")) S.modelPro = "gemini-3.1-pro-preview";
   if (!S.conversations.length) newChat(true);
   if (!S.currentId || !S.conversations.find((c) => c.id === S.currentId)) S.currentId = S.conversations[0].id;
 }
@@ -373,8 +376,8 @@ window.addEventListener("DOMContentLoaded", () => {
   // Settings
   $("btnSaveSettings").onclick = () => {
     S.apiKey = $("sKey").value.trim();
-    S.modelFree = $("sFree").value.trim() || "gemini-2.5-flash";
-    S.modelPro = $("sPro").value.trim() || "gemini-2.5-pro";
+    S.modelFree = $("sFree").value.trim() || "gemini-3.8-flash";
+    S.modelPro = $("sPro").value.trim() || "gemini-3.1-pro-preview";
     save(); $("mSettings").classList.add("hidden"); toast("Settings saved");
   };
   $("btnWipe").onclick = () => { if (confirm("Erase all chats, documents, tasks and your key?")) { localStorage.removeItem(KEY); location.reload(); } };

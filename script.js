@@ -68,15 +68,19 @@ async function gemini(contents, system) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const body = { contents };
   if (system) body.systemInstruction = { parts: [{ text: system }] };
-  let res;
-  try {
-    res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey }, body: JSON.stringify(body) });
-  } catch { throw new Error("Network error. Check your connection."); }
-  if (!res.ok) {
-    let msg = `HTTP ${res.status}`;
-    try { msg = (await res.json()).error.message || msg; } catch {}
-    throw new Error(msg);
+  let res, lastMsg = "";
+  // Retry up to 4 times on temporary errors (429 / 5xx) with growing delays
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 1500 * 2 ** (attempt - 1)));
+    try {
+      res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": S.apiKey }, body: JSON.stringify(body) });
+    } catch { lastMsg = "Network error. Check your connection."; res = null; continue; }
+    if (res.ok) break;
+    lastMsg = `HTTP ${res.status}`;
+    try { lastMsg = (await res.json()).error.message || lastMsg; } catch {}
+    if (res.status !== 429 && res.status < 500) break; // real error, don't retry
   }
+  if (!res || !res.ok) throw new Error(lastMsg + (res && (res.status === 429 || res.status >= 500) ? " (Google is busy — tap Retry in a moment.)" : ""));
   const data = await res.json();
   const text = (data.candidates?.[0]?.content?.parts || []).map((p) => p.text || "").join("");
   if (!text) throw new Error(data.promptFeedback?.blockReason ? "Blocked: " + data.promptFeedback.blockReason : "Empty response.");
@@ -129,6 +133,17 @@ function renderMessages(typing) {
       <div class="md">${md(m.text)}</div><div class="time">${esc(m.time)}</div></div>`;
     const cp = el.querySelector(".copy");
     if (cp) cp.onclick = () => { navigator.clipboard.writeText(m.text); toast("Copied"); };
+    if (m.error && i === c.messages.length - 1) {
+      const rb = document.createElement("button");
+      rb.className = "btn sm"; rb.textContent = "↻ Retry"; rb.style.marginTop = "8px";
+      rb.onclick = () => {
+        const last = c.messages[i - 1];
+        c.messages.splice(i - 1, 2); // remove the error and the user message it answered
+        $("chatInput").value = last && last.sender === "USER" ? last.text : "";
+        save(); renderMessages(); sendMessage();
+      };
+      el.querySelector(".bubble").appendChild(rb);
+    }
     box.appendChild(el);
   });
   if (typing) {
